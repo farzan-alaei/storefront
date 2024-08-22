@@ -8,12 +8,29 @@ from django.utils.html import format_html, urlencode
 from . import models
 
 
+class InventoryFilter(admin.SimpleListFilter):
+    title = 'inventory'
+    parameter_name = 'inventory'
+
+    def lookups(self, request, model_admin):
+        return [
+            ('<10', 'Low'),
+            ('>10', 'OK')
+        ]
+    
+    def queryset(self, request, queryset):
+        if self.value() == '<10':
+            return queryset.filter(inventory__lt=10)
+        if self.value() == '>10':
+            return queryset.filter(inventory__gt=10)
+
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['title', 'unit_price',
                     'inventroy_status', 'collection_title']
-    list_editable = ['unit_price']
     list_per_page = 10
+    list_editable = ['unit_price']
+    list_filter = ['collection', 'last_update', InventoryFilter]
     list_select_related = ['collection']
 
     def collection_title(self, product):
@@ -44,10 +61,11 @@ class CustomerAdmin(admin.ModelAdmin):
             }))
         return format_html('<a href="{}">{} Orders</a>', url, customer.order_count)
 
-    def get_queryset(self, request) :
+    def get_queryset(self, request):
         return super().get_queryset(request).annotate(
             order_count=Count('order')
         )
+
 
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
