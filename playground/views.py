@@ -1,9 +1,15 @@
 from django.shortcuts import render
-from django.db.models import Q, F
-from store.models import Order, Product
+from django.db.models.aggregates import Count, Sum, Min, Max, Avg
+from store.models import Order, Collection, Product
 
 
 def say_hello(request):
-    queryset = Order.objects.select_related('customer').prefetch_related(
-        'orderitem_set__product').order_by('-placed_at')[:5]
-    return render(request, 'hello.html', {'name': 'Mosh', 'page_obj': list(queryset)})
+    collection_3 = Collection.objects.get(
+        pk=3)  # Assuming collection 3 has ID 3
+    min_price = Product.objects.filter(collection=collection_3).aggregate(
+        Min('unit_price'))['unit_price__min']
+    max_price = Product.objects.filter(collection=collection_3).aggregate(
+        Max('unit_price'))['unit_price__max']
+    avg_price = Product.objects.filter(collection=collection_3).aggregate(
+        Avg('unit_price'))['unit_price__avg']
+    return render(request, 'hello.html', {'name': 'Mosh', 'min': min_price, 'max': max_price, 'avg': avg_price})
