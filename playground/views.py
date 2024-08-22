@@ -1,13 +1,9 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-
-
-def calculate():
-    x = 1
-    y = 2
-    return x
+from django.db.models import Q
+from store.models import Product
 
 
 def say_hello(request):
-    x = calculate()
-    return render(request, 'hello.html', {'name': 'Mosh'})
+    queryset = Product.objects.filter(
+        Q(unit_price__lt=10) & ~Q(inventory__lt=10))
+    return render(request, 'hello.html', {'name': 'Mosh', 'page_obj': list(queryset)})
