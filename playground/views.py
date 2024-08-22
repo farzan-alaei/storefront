@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from store.models import Collection, Product
+from store.models import Collection, Product, Cart, CartItem
 
 
 def say_hello(request):
-    Collection.objects.filter(pk=11).delete()
+    cart = Cart.objects.filter(pk=1).delete()
+
     return render(request, 'hello.html', {'name': 'Mosh'})
