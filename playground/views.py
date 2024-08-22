@@ -1,19 +1,12 @@
 from django.shortcuts import render
-from django.db import transaction
-from store.models import Order, OrderItem
+from django.db import connection
+from store.models import Product
 
 
 def say_hello(request):
-    with transaction.atomic():
-        order = Order()
-        order.customer_id = 1
-        order.save()
+    queryset = Product.objects.raw('SELECT * FROM store_product')
 
-        item = OrderItem()
-        item.order = order
-        item.product_id = 1
-        item.quantity = 1
-        item.unit_price = 10
-        item.save()
+    # with connection.cursor() as cursor:
+    #     cursor.callproc('get_customers', [1, 2, 'a'])
 
-    return render(request, 'hello.html', {'name': 'Mosh'})
+    return render(request, 'hello.html', {'name': 'Mosh', 'page_obj': queryset})
