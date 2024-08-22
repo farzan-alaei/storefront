@@ -1,12 +1,13 @@
 from django.shortcuts import render
-from django.db.models import Value, Func, F, Count, Max, Sum
-from django.db.models.functions import Concat
+from django.contrib.contenttypes.models import ContentType
 from store.models import Product
+from tags.models import TaggedItem
 
 
 def say_hello(request):
-    queryset = Product.objects.annotate(
-        total_sales=Sum('orderitem__quantity')
-    ).order_by('-total_sales')[:5]
-
-    return render(request, 'hello.html', {'name': 'Mosh', 'page_obj': queryset})
+    content_type = ContentType.objects.get_for_model(Product)
+    queryset = TaggedItem.objects \
+        .select_related('tag') \
+        .filter(
+            content_type=content_type, object_id=1)
+    return render(request, 'hello.html', {'name': 'Mosh', 'page_obj': list(queryset)})
