@@ -7,7 +7,9 @@
   <h1>Hello World</h1>
   {% endif %}
   <ul>
-    {{ page_obj }}
+    {% for item in page_obj %}
+    <li>{{ item.title }}</li>
+    {% endfor %}
   </ul>
 </body>
 
