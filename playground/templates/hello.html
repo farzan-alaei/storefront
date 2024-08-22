@@ -8,7 +8,7 @@
   {% endif %}
   <ul>
     {% for object in page_obj %}
-    <li>{{ object.title }}</li>
+    <li>{{ object.title }} - {{ object.collection.title }}</li>
     {% endfor %}
   </ul>
 </body>
