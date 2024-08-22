@@ -4,5 +4,5 @@ from store.models import Product
 
 
 def say_hello(request):
-    queryset = Product.objects.filter(inventory=F('collection__id'))
+    queryset = Product.objects.order_by("title")
     return render(request, 'hello.html', {'name': 'Mosh', 'page_obj': list(queryset)})
