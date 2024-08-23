@@ -79,9 +79,19 @@ class CustomerAdmin(admin.ModelAdmin):
         )
 
 
+class OrderItemInline(admin.TabularInline):
+    model = models.OrderItem
+    min_num = 1
+    max_num = 10
+    autocomplete_fields = ['product']
+    extra = 0
+
+
+
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
     autocomplete_fields = ['customer']
+    inlines = [OrderItemInline]
     list_display = ['id', 'placed_at', 'customer']
     list_per_page = 10
 
