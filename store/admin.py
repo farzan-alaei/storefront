@@ -1,8 +1,5 @@
-from typing import Any
 from django.contrib import admin
 from django.db.models.aggregates import Count
-from django.db.models.query import QuerySet
-from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.html import format_html, urlencode
 from . import models
@@ -17,15 +14,17 @@ class InventoryFilter(admin.SimpleListFilter):
             ('<10', 'Low'),
             ('>10', 'OK')
         ]
-    
+
     def queryset(self, request, queryset):
         if self.value() == '<10':
             return queryset.filter(inventory__lt=10)
         if self.value() == '>10':
             return queryset.filter(inventory__gt=10)
 
+
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
+    actions = ['clear_inventory']
     list_display = ['title', 'unit_price',
                     'inventroy_status', 'collection_title']
     list_per_page = 10
@@ -41,6 +40,16 @@ class ProductAdmin(admin.ModelAdmin):
         if product.inventory < 10:
             return 'Low'
         return 'OK'
+
+    @admin.action(
+        description='Clear inventory'
+    )
+    def clear_inventory(self, request, queryset):
+        updated_count = queryset.update(inventory=0)
+        self.message_user(
+            request,
+            f'{updated_count} products were successfully updated.',
+        )
 
 
 @admin.register(models.Customer)
