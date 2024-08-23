@@ -1,8 +1,10 @@
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.contrib.contenttypes.admin import GenericTabularInline
 from django.db.models.aggregates import Count
 from django.urls import reverse
 from django.utils.html import format_html, urlencode
 from . import models
+from tags.models import TaggedItem
 
 
 class InventoryFilter(admin.SimpleListFilter):
@@ -22,11 +24,16 @@ class InventoryFilter(admin.SimpleListFilter):
             return queryset.filter(inventory__gt=10)
 
 
+class TagInline(GenericTabularInline):
+    autocomplete_fields = ['tag']
+    model = TaggedItem
+
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
     autocomplete_fields = ['collection']
     prepopulated_fields = {'slug': ['title']}
     actions = ['clear_inventory']
+    inlines = [TagInline]
     list_display = ['title', 'unit_price',
                     'inventroy_status', 'collection_title']
     list_per_page = 10
@@ -52,6 +59,7 @@ class ProductAdmin(admin.ModelAdmin):
         self.message_user(
             request,
             f'{updated_count} products were successfully updated.',
+            messages.ERROR
         )
 
 
