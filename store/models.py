@@ -66,13 +66,16 @@ class Customer(models.Model):
     @admin.display(ordering='user__first_name')
     def first_name(self):
         return self.user.first_name
-    
+
     @admin.display(ordering='user__last_name')
     def last_name(self):
         return self.user.last_name
 
     class Meta:
         ordering = ['user__first_name', 'user__last_name']
+        permissions = [
+            ('view_history', 'Can view history'),
+        ]
 
 
 class Order(models.Model):
