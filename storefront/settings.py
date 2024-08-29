@@ -151,9 +151,6 @@ REST_FRAMEWORK = {
     ),
 }
 
-SimpleJWT = {
-    'AUTH_HEADER_TYPES': ('JWT',),
-}
 
 # User model for authentication
 AUTH_USER_MODEL = 'core.User'
@@ -161,9 +158,11 @@ AUTH_USER_MODEL = 'core.User'
 DJOSER = {
     'SERIALIZERS': {
         'user_create': 'core.serializers.UserCreateSerializer',
+        'current_user': 'core.serializers.UserSerializer',
     }
 }
- 
+
 SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('JWT',),
     'ACCESS_TOKE_LIFETIME': timedelta(days=1),
 }
