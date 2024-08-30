@@ -1,4 +1,3 @@
-from django.core.serializers import serialize
 from django.db.models.aggregates import Count
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
@@ -37,6 +36,7 @@ from .serializers import (
     CustomerSerializer,
     OrderSerializer,
     CreateOrderSerializer,
+    UpdateOrderSerializer,
 )
 from .pagination import DefaultPagination
 from .filters import ProductFilter
@@ -146,6 +146,7 @@ class CustomerViewSet(ModelViewSet):
 
 class OrderViewSet(ModelViewSet):
     http_method_names = ["get", "patch", "delete", "head", "options"]
+
     def get_permissions(self):
         if self.request.method in ["PATCH", "DELETE"]:
             return [IsAdminUser()]
@@ -164,6 +165,8 @@ class OrderViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.request.method == "POST":
             return CreateOrderSerializer
+        elif self.request.method == "PATCH":
+            return UpdateOrderSerializer
         return OrderSerializer
 
     def get_queryset(self):
