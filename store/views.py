@@ -6,8 +6,6 @@ from rest_framework.decorators import action
 from rest_framework.permissions import (
     IsAdminUser,
     IsAuthenticated,
-    DjangoModelPermissions,
-    DjangoModelPermissionsOrAnonReadOnly,
 )
 from rest_framework.mixins import (
     CreateModelMixin,
@@ -37,6 +35,7 @@ from .serializers import (
     UpdateCartItemSerializer,
     CustomerSerializer,
     OrderSerializer,
+    CreateOrderSerializer,
 )
 from .pagination import DefaultPagination
 from .filters import ProductFilter
@@ -145,8 +144,15 @@ class CustomerViewSet(ModelViewSet):
 
 
 class OrderViewSet(ModelViewSet):
-    serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return CreateOrderSerializer
+        return OrderSerializer
+
+    def get_serializer_context(self):
+        return {"user_id": self.request.user.id}
 
     def get_queryset(self):
         user = self.request.user
