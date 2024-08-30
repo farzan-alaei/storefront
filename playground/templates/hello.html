@@ -1,16 +1,9 @@
 <html>
-
-<body>
-  {% if name %}
-  <h1>Hello {{ name }}</h1>
-  {% else %}
-  <h1>Hello World</h1>
-  {% endif %}
-  <ul>
-    {% for item in page_obj %}
-    <li>{{ item.title }}</li>
-    {% endfor %}
-  </ul>
-</body>
-
+  <body>
+    {% if name %}
+    <h1>Hello {{ name }}</h1>
+    {% else %}
+    <h1>Hello World</h1>
+    {% endif %}
+  </body>
 </html>

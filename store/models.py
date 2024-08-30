@@ -1,5 +1,5 @@
-from django.conf import settings
 from django.contrib import admin
+from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
 from uuid import uuid4
@@ -13,7 +13,7 @@ class Promotion(models.Model):
 class Collection(models.Model):
     title = models.CharField(max_length=255)
     featured_product = models.ForeignKey(
-        'Product', on_delete=models.SET_NULL, null=True, related_name='+')
+        'Product', on_delete=models.SET_NULL, null=True, related_name='+', blank=True)
 
     def __str__(self) -> str:
         return self.title
@@ -60,7 +60,7 @@ class Customer(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'
 
     @admin.display(ordering='user__first_name')
@@ -74,7 +74,7 @@ class Customer(models.Model):
     class Meta:
         ordering = ['user__first_name', 'user__last_name']
         permissions = [
-            ('view_history', 'Can view history'),
+            ('view_history', 'Can view history')
         ]
 
 
@@ -95,7 +95,7 @@ class Order(models.Model):
 
     class Meta:
         permissions = [
-            ('cancel_order', 'Cand cancel order'),
+            ('cancel_order', 'Can cancel order')
         ]
 
 

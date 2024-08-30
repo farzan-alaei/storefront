@@ -1,5 +1,5 @@
-from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer, UserSerializer as BaseUserSerializer
-from rest_framework import serializers
+from store.models import Customer
+from djoser.serializers import UserSerializer as BaseUserSerializer, UserCreateSerializer as BaseUserCreateSerializer
 
 
 class UserCreateSerializer(BaseUserCreateSerializer):
