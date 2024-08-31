@@ -6,3 +6,6 @@ __pycache__/
 /media/*
 .vscode/
 .vscode/*
+/images/
+/images/*
+playground/static/images/
