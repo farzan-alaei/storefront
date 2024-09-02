@@ -1,5 +1,6 @@
 import pytest
 from rest_framework import status
+from model_bakery import baker
 
 
 @pytest.fixture
@@ -40,3 +41,16 @@ class TestCreateCollection:
         response = create_collection({"title": "a"})
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data["id"] > 0
+
+
+@pytest.mark.django_db
+class TestRetrieveCollection:
+    def test_if_collection_exists_returns_200(self, api_client, create_collection):
+        collection = baker.make("Collection")
+        response = api_client.get(f"/store/collections/{collection.id}/")
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data == {
+            "id": collection.id,
+            "title": collection.title,
+            "products_count": 0,
+        }
